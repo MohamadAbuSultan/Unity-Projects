@@ -7,7 +7,7 @@ public class CharacterMovement : MonoBehaviour
     Transform cam;
     float gravity = 10;
     float verticalVelocity = 10;
-    public float jumpValue = 3;
+    public float jumpValue = 7;
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -18,6 +18,8 @@ public class CharacterMovement : MonoBehaviour
     {
         float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
+        bool isSprint = Input.GetKey(KeyCode.LeftShift);
+        float sprint = isSprint ? 1.7f : 1;
         Vector3 moveDirection = new Vector3(horizontal, 0, vertical);
 
         if (characterController.isGrounded)
@@ -41,7 +43,9 @@ public class CharacterMovement : MonoBehaviour
         }
         moveDirection = cam.TransformDirection(moveDirection);
 
-        moveDirection = new Vector3(moveDirection.x, verticalVelocity, moveDirection.z);
-        characterController.Move(moveDirection * Time.deltaTime * speed);
+        moveDirection = new Vector3(moveDirection.x * speed * sprint
+                        , verticalVelocity,
+                        moveDirection.z * speed * sprint);
+        characterController.Move(moveDirection * Time.deltaTime);
     }
 }
