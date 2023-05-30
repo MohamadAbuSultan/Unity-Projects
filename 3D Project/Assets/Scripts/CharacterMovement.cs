@@ -8,10 +8,12 @@ public class CharacterMovement : MonoBehaviour
     float gravity = 10;
     float verticalVelocity = 10;
     public float jumpValue = 7;
+    Animator animator;
     private void Start()
     {
         characterController = GetComponent<CharacterController>();
         cam = Camera.main.transform;
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Update()
@@ -22,6 +24,16 @@ public class CharacterMovement : MonoBehaviour
         float sprint = isSprint ? 1.7f : 1;
         Vector3 moveDirection = new Vector3(horizontal, 0, vertical);
 
+        animator.SetFloat("Speed", Mathf.Clamp(moveDirection.magnitude, 0, 0.5f) + (isSprint ? 0.5f : 0));
+        // setfloat : تقوم بإعطاء قيمة للبراميتر الموجود في الأنيميتور
+        // magnitude : تعطيك الطول الخاص بالفيكتور
+        // Mathf.Clamp تعطيك حد أقصى للقيمة ، بحيث لا يتجاوز هذه القيمة
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            animator.SetTrigger("Attack");
+        }
+
         if (characterController.isGrounded)
         {
             if (Input.GetAxis("Jump") > 0)
@@ -30,7 +42,7 @@ public class CharacterMovement : MonoBehaviour
         else
             verticalVelocity -= gravity * Time.deltaTime;
 
-        if (moveDirection.magnitude > 0.1)
+        if (moveDirection.magnitude > 0.1f)
         {
             // magnitude طول المتجه
             float angle = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
