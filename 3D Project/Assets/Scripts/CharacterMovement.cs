@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -60,4 +61,19 @@ public class CharacterMovement : MonoBehaviour
                         moveDirection.z * speed * sprint);
         characterController.Move(moveDirection * Time.deltaTime);
     }
+
+    public void DoAttack()
+    {
+        transform.Find("Collider").GetComponent<BoxCollider>().enabled = true;
+        StartCoroutine(HideCollider());
+    }
+
+
+    IEnumerator HideCollider()
+    {
+        yield return new WaitForSeconds(0.5f);
+        transform.Find("Collider").GetComponent<BoxCollider>().enabled = false;
+        // بعد أن ينتظر نصف ثانية قم بعمل إخفاء للكولايدر
+    }
+
 }
